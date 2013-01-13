@@ -7,7 +7,7 @@
   "version": "1.0",
   "author": "Andreas Öman",
   "title": "Opensubtitles",
-  "icon": "logo.gif",
+  "icon": "logo.jpg",
   "synopsis": "Biggest multi-language subtitle database",
   "homepage":"http://www.opensubtitles.org/",
   "description":"Installing this plugin will make Showtime automatically search for subtitles online at opensubtitles.org when playing a movie"
