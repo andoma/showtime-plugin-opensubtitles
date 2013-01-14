@@ -55,7 +55,7 @@
 
     // Build a opensubtitle query based on request from Showtime
 
-    if(req.filesize) {
+    if(req.filesize > 0 && req.opensubhash !== undefined) {
       queries.push({
 	sublanguageid: lang,
 	moviehash: req.opensubhash,
