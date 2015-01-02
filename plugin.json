@@ -1,10 +1,10 @@
 {
-  "type": "javascript",
+  "type": "ecmascript",
   "id": "opensubtitles",
   "file": "opensubtitles.js",
   "category": "subtitles",
-  "showtimeVersion": "4.1.404",
-  "version": "1.2",
+  "showtimeVersion": "4.8",
+  "version": "2.0",
   "author": "Andreas Öman",
   "title": "Opensubtitles",
   "icon": "logo.jpg",

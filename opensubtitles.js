@@ -93,11 +93,11 @@
       if(r[0].status == '200 OK' && typeof(r[0].data == 'object')) {
 	var set = {}; // We can get same subtitle multiple times, so keep track
 	var cnt = 0;
-	for(var i in r[0].data) {
+        var len = r[0].data.length;
+	for(var i = 0; i < len; i++) {
 
 	  var sub = r[0].data[i];
 	  var url = sub.SubDownloadLink;
-
 	  if(url in set)
 	    continue;
 
