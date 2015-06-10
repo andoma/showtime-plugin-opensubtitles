@@ -116,7 +116,7 @@
 	    score++; // matches by file hash is better
 
           if ((req.season == sub.SeriesSeason) && (req.episode == sub.SeriesEpisode))
-            score++; // matches by season and episode is even better
+            score += 2; // matches by season and episode is even better
 
 	  req.addSubtitle(url, sub.SubFileName, sub.SubLanguageID,
 			  sub.SubFormat,
