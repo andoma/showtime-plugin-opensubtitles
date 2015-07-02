@@ -1,7 +1,7 @@
 /*
- *  Opensubtitles plugin
+ *  Opensubtitles plugin for Movian Media Center
  *
- *  Copyright (C) 2013 Andreas Öman
+ *  Copyright (C) 2013-2015 Andreas Öman
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,9 +32,15 @@
       
       trace('Attempting to login as anonymous user');
 
-      var r = showtime.xmlrpc(APIURL, "LogIn", '', '', 'en',
+      var r;
+      try {
+          r = showtime.xmlrpc(APIURL, "LogIn", '', '', 'en',
 			      'Showtime ' + showtime.currentVersionString);
-      
+      } catch(err) {
+        trace("Cannot send login to opensubtitles: " + err);
+	return;
+      }
+
       if(r[0].status == '200 OK') {
 	token = r[0].token;
 	trace('Login OK');
@@ -53,7 +59,7 @@
     // Get list of user preferred languages for subs
     var lang = showtime.getSubtitleLanguages().join(',');
 
-    // Build a opensubtitle query based on request from Showtime
+    // Build a opensubtitle query based on request from Movian
 
     if(req.filesize > 0 && req.opensubhash !== undefined) {
       queries.push({
@@ -62,25 +68,22 @@
 	moviebytesize: req.filesize.toString()
       });
     }
-      
     if(req.imdb && req.imdb.indexOf('tt') == 0) {
       queries.push({
 	sublanguageid: lang,
 	imdbid: req.imdb.substring(2)
       });
     } else if(req.title) {
-      var q = {
+      queries.push({
 	sublanguageid: lang,
 	query: req.title
-      };
-
-      if(req.season > 0 && req.episode > 0) {
-	q.season = req.season;
-	q.episode = req.episode;
-      }
-
-      queries.push(q);
+      });
     }
+    if(req.season > 0 && req.episode > 0) {
+        queries.season = req.season;
+	queries.episode = req.episode;
+    }
+
 
     // Loop so we can retry once (relogin) if something fails
     // This typically happens if the token times out
@@ -88,14 +91,19 @@
     for(var retry = 0; retry < 2; retry++) {
       login(retry);
 
-      var r = showtime.xmlrpc(APIURL, "SearchSubtitles", token, queries);
+      var r;
+      try {
+          r = showtime.xmlrpc(APIURL, "SearchSubtitles", token, queries);
+      } catch(err) {
+        trace("Cannot send search query to opensubtitles: " + err);
+	return;
+      }
     
       if(r[0].status == '200 OK' && typeof(r[0].data == 'object')) {
 	var set = {}; // We can get same subtitle multiple times, so keep track
 	var cnt = 0;
         var len = r[0].data.length;
 	for(var i = 0; i < len; i++) {
-
 	  var sub = r[0].data[i];
 	  var url = sub.SubDownloadLink;
 	  if(url in set)
@@ -104,9 +112,12 @@
 	  set[url] = true;
 
 	  var score = 0;
-	  if (sub.MatchedBy == 'moviehash') 
+	  if (sub.MatchedBy == 'moviehash')
 	    score++; // matches by file hash is better
-	  
+
+          if ((req.season == sub.SeriesSeason) && (req.episode == sub.SeriesEpisode))
+            score++; // matches by season and episode is even better
+
 	  req.addSubtitle(url, sub.SubFileName, sub.SubLanguageID,
 			  sub.SubFormat,
 			  'opensubtitles (' + sub.MatchedBy + ')',
