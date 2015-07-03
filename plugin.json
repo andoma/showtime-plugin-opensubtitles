@@ -4,11 +4,11 @@
   "file": "opensubtitles.js",
   "category": "subtitles",
   "showtimeVersion": "4.8",
-  "version": "2.0",
+  "version": "2.0.1",
   "author": "Andreas Öman",
   "title": "Opensubtitles",
   "icon": "logo.jpg",
   "synopsis": "Biggest multi-language subtitle database",
   "homepage":"http://www.opensubtitles.org/",
-  "description":"Installing this plugin will make Showtime automatically search for subtitles online at opensubtitles.org when playing a movie"
+  "description":"Installing this plugin will make Movian automatically search for subtitles online at opensubtitles.org when playing a movie"
 }
