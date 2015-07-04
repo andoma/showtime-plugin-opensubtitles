@@ -83,7 +83,6 @@
         episode: req.episode
       });
     }
-print(showtime.JSONEncode(queries));
 
     // Loop so we can retry once (relogin) if something fails
     // This typically happens if the token times out
