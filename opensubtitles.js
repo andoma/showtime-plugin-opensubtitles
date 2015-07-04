@@ -71,19 +71,18 @@
     if(req.imdb && req.imdb.indexOf('tt') == 0) {
       queries.push({
 	sublanguageid: lang,
-	imdbid: req.imdb.substring(2)
+	imdbid: req.imdb.substring(2),
+        season: req.season,
+        episode: req.episode
       });
     } else if(req.title) {
       queries.push({
 	sublanguageid: lang,
-	query: req.title
+	query: req.title,
+        season: req.season,
+        episode: req.episode
       });
     }
-    if(req.season > 0 && req.episode > 0) {
-        queries.season = req.season;
-	queries.episode = req.episode;
-    }
-
 
     // Loop so we can retry once (relogin) if something fails
     // This typically happens if the token times out
