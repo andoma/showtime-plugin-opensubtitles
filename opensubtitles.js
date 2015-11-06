@@ -26,19 +26,39 @@
     showtime.trace(str, 'opensubtitles');
   }
 
+  settings =
+    plugin.createSettings("Opensubtitles", plugin.path + "logo.jpg",
+                          "Login details for opensubtitles");
+
+  var usernname = '';
+  var password = '';
+
+    settings.createString("username", "Username", "", function(v) {
+      username = v;
+      token = null;
+    });
+
+    settings.createString("password", "Password", "", function(v) {
+      password = v;
+      token = null;
+    });
+
   function login(force) {
 
     if(token === null || force) {
-      
-      trace('Attempting to login as anonymous user');
+      trace('Attempting to login as: ' + (username ? username : 'Anonymous'));
 
       var r;
       try {
-          r = showtime.xmlrpc(APIURL, "LogIn", '', '', 'en',
-			      'Showtime ' + showtime.currentVersionString);
+        var r = showtime.xmlrpc(APIURL, "LogIn", username, password, 'en',
+			        'Showtime ' + showtime.currentVersionString);
       } catch(err) {
         trace("Cannot send login to opensubtitles: " + err);
-	return;
+
+        if(force)
+          showtime.notify('Opensubtitles login failel: ' + err,
+                          5, plugin.path + "logo.jpg");
+        return;
       }
 
       if(r[0].status == '200 OK') {
@@ -47,6 +67,9 @@
       } else {
 	token = null;
 	trace('Login failed: ' + r[0].status);
+        if(force)
+          showtime.notify('Opensubtitles login failed: ' + r[0].status,
+                          5, plugin.path + "logo.jpg");
       }
     }
   }
