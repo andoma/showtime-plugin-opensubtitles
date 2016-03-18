@@ -79,6 +79,9 @@
 
     var queries = [];
 
+    if(req.duration < 5 * 60)
+      return; // Don't query about clips shorter than 5 minutes
+
     // Get list of user preferred languages for subs
     var lang = showtime.getSubtitleLanguages().join(',');
 
@@ -128,6 +131,18 @@
 	for(var i = 0; i < len; i++) {
 	  var sub = r[0].data[i];
 	  var url = sub.SubDownloadLink;
+
+          if(sub.MatchedBy == 'fulltext') {
+            var a = sub.SubLastTS.split(':');
+            if(a.length == 3) {
+              var seconds = (+a[0]) * 3600 + (+a[1]) * 60 + (+a[2]);
+              if(seconds < 30000 && seconds > req.duration * 1.1) {
+//                console.log("Skipping " + url + " " + seconds + "(" +  sub.SubLastTS + ") > " + req.duration * 1.1);
+                continue;
+              }
+            }
+          }
+
 	  if(url in set)
 	    continue;
 
