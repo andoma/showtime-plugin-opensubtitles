@@ -158,7 +158,9 @@ new subtitles.addProvider(function(req) {
         if ((req.season == sub.SeriesSeason) && (req.episode == sub.SeriesEpisode))
           score += 2; // matches by season and episode is even better
 
-	req.addSubtitle(url, sub.SubFileName, sub.SubLanguageID,
+        var localurl = "opensubtitlefs://" + url.replace(/\/sid-[a-z0-9]*\//, '/__SID_TOKEN__/')
+
+	req.addSubtitle(localurl, sub.SubFileName, sub.SubLanguageID,
 			sub.SubFormat,
 			'opensubtitles (' + sub.MatchedBy + ')',
 			score);
@@ -172,3 +174,31 @@ new subtitles.addProvider(function(req) {
     }
   }
 });
+
+
+
+var fap = require('native/faprovider');
+
+fap.register('opensubtitlefs', {
+
+  redirect: function(handle, url) {
+    console.log("Redirect: " + url);
+
+    for(var retry = 0; retry < 2; retry++) {
+      // Verify that our token is still valid
+      login(retry);
+
+      r = xmlrpc.call(APIURL, "NoOperation", token);
+      if(r[0].status == '200 OK') {
+
+        var realurl = url.replace(/__SID_TOKEN__/, 'sid-' + token);
+        console.log("Redirecting " + url + " to " + realurl);
+
+        fap.redirectRespond(handle, true, realurl);
+        return;
+      }
+    }
+    fap.redirectRespond(handle, false, 'Unable to access opensubtitles');
+  }
+});
+
