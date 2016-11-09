@@ -134,8 +134,7 @@ new subtitles.addProvider(function(req) {
       for(var i = 0; i < len; i++) {
 	var sub = r[0].data[i];
 	var url = sub.SubDownloadLink;
-
-        if(sub.MatchedBy == 'fulltext') {
+        if(sub.MatchedBy == 'fulltext' && sub.subLastTS) {
           var a = sub.SubLastTS.split(':');
           if(a.length == 3) {
             var seconds = (+a[0]) * 3600 + (+a[1]) * 60 + (+a[2]);
