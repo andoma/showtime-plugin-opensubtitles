@@ -157,7 +157,7 @@ new subtitles.addProvider(function(req) {
         if ((req.season == sub.SeriesSeason) && (req.episode == sub.SeriesEpisode))
           score += 2; // matches by season and episode is even better
 
-        var localurl = "opensubtitlefs://" + url.replace(/\/sid-[a-z0-9]*\//, '/__SID_TOKEN__/')
+        var localurl = "opensubtitlefs://" + url.replace(/\/sid-[^\/]+\//, '/__SID_TOKEN__/')
 
 	req.addSubtitle(localurl, sub.SubFileName, sub.SubLanguageID,
 			sub.SubFormat,
