@@ -22,7 +22,7 @@ var subtitles = require('showtime/subtitles');
 var xmlrpc = require('showtime/xmlrpc');
 var popup = require('native/popup');
 
-var APIURL = "http://api.opensubtitles.org/xml-rpc";
+var APIURL = "https://api.opensubtitles.org/xml-rpc";
 var token = null;
 var usernname = '';
 var password = '';
